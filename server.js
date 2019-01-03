@@ -1,6 +1,7 @@
 const expess = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
+const passport = require('passport');
 const db = require('./config/keys').mongoURI;
 
 const app = expess();
@@ -8,6 +9,8 @@ const users = require('./routes/api/users');
 
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(bodyParser.json());
+
+
 // connnect to mongodb
 mongoose.connect(db)
         .then(() => {
@@ -17,11 +20,10 @@ mongoose.connect(db)
             console.log(err);
         })
 
+// passport 初始化
+app.use(passport.initialize());
+require('./config/passport')(passport);
 
-
-app.get('/',(req,res) =>{
-    res.send('hello,world!!');
-})
 
 app.use('/api/users',users);
 const port  = process.env.PORT || 5000;
